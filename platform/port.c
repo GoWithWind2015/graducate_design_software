@@ -194,7 +194,7 @@ int RCC_Configuration(void)
 	RCC_HSEConfig(RCC_HSE_ON);
 
 	/* Wait till HSE is ready */
-	HSEStartUpStatus = RCC_WaitForHSEStartUp();
+ 	HSEStartUpStatus = RCC_WaitForHSEStartUp();
 
 	if(HSEStartUpStatus != ERROR)
 	{
@@ -562,7 +562,7 @@ GPIO_PinRemapConfig(GPIO_Remap_SWJ_JTAGDisable, ENABLE);
 	
 		GPIO_InitStructure.GPIO_Pin = SW3 | SW4 | SW5 | SW6 | SW7 | SW8;
 	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IPU;
-	GPIO_Init(GPIOB, &GPIO_InitStructure);
+	GPIO_Init(GPIOD, &GPIO_InitStructure);
 	//实际上并没有使用LED 因此此处注释，实际也可以删除
 //		GPIO_InitStructure.GPIO_Pin = LED_PIN;
 //	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;
