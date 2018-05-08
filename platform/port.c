@@ -387,19 +387,19 @@ int SPI_Configuration(void)
 {
 	SPI_InitTypeDef SPI_InitStructure;
 	GPIO_InitTypeDef GPIO_InitStructure;
-
+// 此处SPIx即为,SPI1 不作改动
 	SPI_I2S_DeInit(SPIx);
 
 	// SPIx Mode setup
-	SPI_InitStructure.SPI_Direction = SPI_Direction_2Lines_FullDuplex;
-	SPI_InitStructure.SPI_Mode = SPI_Mode_Master;
-	SPI_InitStructure.SPI_DataSize = SPI_DataSize_8b;
-	SPI_InitStructure.SPI_CPOL = SPI_CPOL_Low;	 //
+	SPI_InitStructure.SPI_Direction = SPI_Direction_2Lines_FullDuplex;  //SPI方式为两线全双工
+	SPI_InitStructure.SPI_Mode = SPI_Mode_Master;          //主机模式
+	SPI_InitStructure.SPI_DataSize = SPI_DataSize_8b;           //数据位为8位
+	SPI_InitStructure.SPI_CPOL = SPI_CPOL_Low;	 //  空闲时总线拉低
 	//SPI_InitStructure.SPI_CPOL = SPI_CPOL_High; //
-	SPI_InitStructure.SPI_CPHA = SPI_CPHA_1Edge;
+	SPI_InitStructure.SPI_CPHA = SPI_CPHA_1Edge;   //第一个下降沿采集数据
 	//SPI_InitStructure.SPI_CPHA = SPI_CPHA_2Edge; //
 	//SPI_InitStructure.SPI_NSS = SPI_NSS_Hard;
-	SPI_InitStructure.SPI_NSS = SPI_NSS_Soft;
+	SPI_InitStructure.SPI_NSS = SPI_NSS_Soft;    //软件NSS ,事实上本程序中，查询了大量的资料，发现一般不用Hard方式，换句话说,hARD方式并没有什么卵用
 	//SPI_InitStructure.SPI_BaudRatePrescaler = SPI_BaudRatePrescaler_4; //sets BR[2:0] bits - baudrate in SPI_CR1 reg bits 4-6
 	SPI_InitStructure.SPI_BaudRatePrescaler = SPIx_PRESCALER;
 	SPI_InitStructure.SPI_FirstBit = SPI_FirstBit_MSB;
@@ -408,26 +408,28 @@ int SPI_Configuration(void)
 	SPI_Init(SPIx, &SPI_InitStructure);
 
 	// SPIx SCK and MOSI pin setup
+	//SPIX_SCL和MOSI均是正确的，不做修改
 	GPIO_InitStructure.GPIO_Pin = SPIx_SCK | SPIx_MOSI;
 	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF_PP;
 	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
-
+//SPIx_GPIO 就是GPIOA 这里不做修改
 	GPIO_Init(SPIx_GPIO, &GPIO_InitStructure);
 
-	// SPIx MISO pin setup
+	// SPIx MISO pin setup  这里不做修改
 	GPIO_InitStructure.GPIO_Pin = SPIx_MISO;
 	//GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN_FLOATING;
 	GPIO_InitStructure.GPIO_Mode  = GPIO_Mode_IPU;
 
 	GPIO_Init(SPIx_GPIO, &GPIO_InitStructure);
 
-	// SPIx CS pin setup
+	// SPIx CS pin setup S
+	//SPIx_CS 为GPIO_PIn_4引脚
 	GPIO_InitStructure.GPIO_Pin = SPIx_CS;
 	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;
 	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
-
+//SPIx_CS_GPIO从GPIOA修改为GPIOC
 	GPIO_Init(SPIx_CS_GPIO, &GPIO_InitStructure);
-
+//SPI VSS引脚输出失能
 	// Disable SPIx SS Output
 	SPI_SSOutputCmd(SPIx, DISABLE);
 

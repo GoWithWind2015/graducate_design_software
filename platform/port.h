@@ -71,7 +71,7 @@ typedef enum
 #define SPIx						SPI1
 #define SPIx_GPIO					GPIOA
 #define SPIx_CS						GPIO_Pin_4
-#define SPIx_CS_GPIO				GPIOA
+#define SPIx_CS_GPIO				GPIOC
 #define SPIx_SCK					GPIO_Pin_5
 #define SPIx_MISO					GPIO_Pin_6
 #define SPIx_MOSI					GPIO_Pin_7
