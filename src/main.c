@@ -454,13 +454,16 @@ int main(void)
 												dist = LP(dis,TAG_ID);//LP 为低通滤波器，让数据更稳定
 												time32_reset = 0;
 											//	GPIO_Toggle(GPIOA,LED_PIN);
-											if (1)  //通过拨码开关判断数据输出格式
+											if (0)  //通过拨码开关判断数据输出格式
 											{
 												dID=TAG_ID;
 //												printf("TAG_ID: %2.0f		", dID);
 												dID=ANCHOR_ID;
 //												printf("ANCHOR_ID: %2.0f		", dID);
-                        printf("Distance: %5.0f cm\n", dist);
+                    //    printf("Distance: %5.0f cm\n", dist);
+                        USART_putc('a');
+                        USART_putc('a\n');
+
 											}else{
 												send[2] = ANCHOR_ID;
 												send[3] = TAG_ID;
@@ -468,7 +471,9 @@ int main(void)
 												memcpy(&send[4],&hex_dist,4);
 											check=Checksum_u16(&send[2],6);
 												memcpy(&send[8],&check,2);
-												USART_puts(send,10);
+												//USART_puts(send,10);
+											//USART_puts(send[4],4);
+												USART_putc(send[4]);
 											}
                        
                     }
