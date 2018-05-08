@@ -619,6 +619,7 @@ if(GPIO_ReadInputDataBit(GPIOD,SW5) == RESET)
 
 void reset_DW1000(void)
 {
+	//reset_DW1000 函数引脚就是PB15 不做改动 加以使用
 	GPIO_InitTypeDef GPIO_InitStructure;
 
 	// Enable GPIO used for DW1000 reset
