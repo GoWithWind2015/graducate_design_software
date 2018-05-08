@@ -454,7 +454,7 @@ int main(void)
 												dist = LP(dis,TAG_ID);//LP 为低通滤波器，让数据更稳定
 												time32_reset = 0;
 												GPIO_Toggle(GPIOA,LED_PIN);
-											if (GPIO_ReadInputDataBit(GPIOA,SW2) != RESET)  //通过拨码开关判断数据输出格式
+											if (GPIO_ReadInputDataBit(GPIOD,SW2) != RESET)  //通过拨码开关判断数据输出格式
 											{
 												dID=TAG_ID;
 												printf("TAG_ID: %2.0f		", dID);
