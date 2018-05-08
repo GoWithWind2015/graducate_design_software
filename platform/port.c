@@ -29,9 +29,9 @@
 
 /* System tick 32 bit variable defined by the platform */
 extern __IO unsigned long time32_incr;
-
+//以下代码没有使用，加以注释
 /* Internal functions prototypes. */
-static void LCD_Configuration(void);
+//static void LCD_Configuration(void);
 static void spi_peripheral_init(void);
 
 int No_Configuration(void)
@@ -511,15 +511,16 @@ int SPI2_Configuration(void)
 
     return 0;
 }
-#define LED_PIN 		GPIO_Pin_2
-#define SW1 		    GPIO_Pin_12
-#define SW2 				GPIO_Pin_15
-#define SW3 				GPIO_Pin_3
+//LED_PIN没有使用，在此处注释掉
+//#define LED_PIN 		GPIO_Pin_2
+#define SW1 		        GPIO_Pin_7   //SW1 用于判断是是基站还是标签，当SW1 引脚输入电平为高的时候表示 为基站ANCHOR
+#define SW2 				GPIO_Pin_6    //修改的引脚  sw2用于在主程序钟判断距离的输出格式。
+#define SW3 				GPIO_Pin_5   //SW3-5用于设置基站ID (ANCHOR_ID)，
 #define SW4 				GPIO_Pin_4
-#define SW5 				GPIO_Pin_5
-#define SW6 				GPIO_Pin_6
-#define SW7 				GPIO_Pin_7
-#define SW8 				GPIO_Pin_8
+#define SW5 				GPIO_Pin_3
+#define SW6 				GPIO_Pin_2   //而SW6-8 用于判断TAG_ID
+#define SW7 				GPIO_Pin_1
+#define SW8 				GPIO_Pin_0
 uint8_t Work_Mode;
 extern uint8_t TAG_ID,ANCHOR_ID;
 int GPIO_Configuration(void)
@@ -533,7 +534,7 @@ int GPIO_Configuration(void)
 	// Enable GPIOs clocks
 	RCC_APB2PeriphClockCmd(
 						RCC_APB2Periph_GPIOA | RCC_APB2Periph_GPIOB |
-						RCC_APB2Periph_GPIOC | RCC_APB2Periph_AFIO,
+						RCC_APB2Periph_GPIOC | RCC_APB2Periph_AFIO|RCC_APB2Periph_GPIOD,
 						ENABLE);
 
 	// Set all GPIO pins as analog inputs
@@ -542,7 +543,8 @@ int GPIO_Configuration(void)
 	GPIO_Init(GPIOA, &GPIO_InitStructure);
 	GPIO_Init(GPIOB, &GPIO_InitStructure);
 	GPIO_Init(GPIOC, &GPIO_InitStructure);
-
+	GPIO_Init(GPIOD, &GPIO_InitStructure);
+//BOOT1 为PB2已经确认
 GPIO_PinRemapConfig(GPIO_Remap_SWJ_JTAGDisable, ENABLE);   
 	//Enable GPIO used for User button
 	GPIO_InitStructure.GPIO_Pin = TA_BOOT1;
@@ -550,7 +552,7 @@ GPIO_PinRemapConfig(GPIO_Remap_SWJ_JTAGDisable, ENABLE);
 	GPIO_Init(TA_BOOT1_GPIO, &GPIO_InitStructure);
 
 	//Enable GPIO used for Response Delay setting
-	
+	//在此处修改相应的按键引脚
 	GPIO_InitStructure.GPIO_Pin = SW1|SW2;
 	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IPU;
 	GPIO_Init(GPIOA, &GPIO_InitStructure);
@@ -558,41 +560,42 @@ GPIO_PinRemapConfig(GPIO_Remap_SWJ_JTAGDisable, ENABLE);
 		GPIO_InitStructure.GPIO_Pin = SW3 | SW4 | SW5 | SW6 | SW7 | SW8;
 	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IPU;
 	GPIO_Init(GPIOB, &GPIO_InitStructure);
-	
-		GPIO_InitStructure.GPIO_Pin = LED_PIN;
-	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;
-	GPIO_Init(GPIOA, &GPIO_InitStructure);
-
-if (GPIO_ReadInputDataBit(GPIOA,SW1) == RESET)  
+	//实际上并没有使用LED 因此此处注释，实际也可以删除
+//		GPIO_InitStructure.GPIO_Pin = LED_PIN;
+//	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;
+//	GPIO_Init(GPIOA, &GPIO_InitStructure);
+//下面的程序根据SW3-5 6-8的值设置 TAG_ID和ANCHOR_ID ，通过SW1的值设置是基站还是标签
+if (GPIO_ReadInputDataBit(GPIOD,SW1) == RESET)
 {
 	Work_Mode = 0;//TX
-	GPIO_Toggle(GPIOA,LED_PIN);
+	//没有使用LED 故此处注释掉
+//	GPIO_Toggle(GPIOA,LED_PIN);
 }else{
 	Work_Mode = 1; //RX
 }
 	TAG_ID = 0;
-if(GPIO_ReadInputDataBit(GPIOB,SW6) == RESET)
+if(GPIO_ReadInputDataBit(GPIOD,SW6) == RESET)
 {
 		TAG_ID |= 1<<2;
 }
-if(GPIO_ReadInputDataBit(GPIOB,SW7) == RESET)
+if(GPIO_ReadInputDataBit(GPIOD,SW7) == RESET)
 {
 		TAG_ID |= 1<<1;
 }
-if(GPIO_ReadInputDataBit(GPIOB,SW8) == RESET)
+if(GPIO_ReadInputDataBit(GPIOD,SW8) == RESET)
 {
 		TAG_ID |= 1;
 }
 
-if(GPIO_ReadInputDataBit(GPIOB,SW3) == RESET)
+if(GPIO_ReadInputDataBit(GPIOD,SW3) == RESET)
 {
 		ANCHOR_ID |= 1<<2;
 }
-if(GPIO_ReadInputDataBit(GPIOB,SW4) == RESET)
+if(GPIO_ReadInputDataBit(GPIOD,SW4) == RESET)
 {
 		ANCHOR_ID |= 1<<1;
 }
-if(GPIO_ReadInputDataBit(GPIOB,SW5) == RESET)
+if(GPIO_ReadInputDataBit(GPIOD,SW5) == RESET)
 {
 		ANCHOR_ID |= 1;
 }
@@ -898,21 +901,22 @@ int is_IRQ_enabled(void)
  *
  * @return none
  */
-static void LCD_Configuration(void)
-{
-    unsigned char initseq[9] = { 0x39, 0x14, 0x55, 0x6D, 0x78, 0x38, 0x0C, 0x01, 0x06 };
-    unsigned char command = 0x0;
-
-    // Write initialisation sequence.
-    writetoLCD(9, 0, initseq);
-    deca_sleep(10);
-
-    // Return cursor home and clear screen.
-    command = 0x2;
-    writetoLCD(1, 0, &command);
-    command = 0x1;
-    writetoLCD(1, 0, &command);
-}
+//以下代码没有使用，注释
+//static void LCD_Configuration(void)
+//{
+//    unsigned char initseq[9] = { 0x39, 0x14, 0x55, 0x6D, 0x78, 0x38, 0x0C, 0x01, 0x06 };
+//    unsigned char command = 0x0;
+//
+//    // Write initialisation sequence.
+//    writetoLCD(9, 0, initseq);
+//    deca_sleep(10);
+//
+//    // Return cursor home and clear screen.
+//    command = 0x2;
+//    writetoLCD(1, 0, &command);
+//    command = 0x1;
+//    writetoLCD(1, 0, &command);
+//}
 
 /*! ------------------------------------------------------------------------------------------------------------------
  * @fn spi_peripheral_init()
