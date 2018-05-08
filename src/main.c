@@ -457,9 +457,9 @@ int main(void)
 											if (GPIO_ReadInputDataBit(GPIOD,SW2) != RESET)  //通过拨码开关判断数据输出格式
 											{
 												dID=TAG_ID;
-												printf("TAG_ID: %2.0f		", dID);
+//												printf("TAG_ID: %2.0f		", dID);
 												dID=ANCHOR_ID;
-												printf("ANCHOR_ID: %2.0f		", dID);
+//												printf("ANCHOR_ID: %2.0f		", dID);
                         printf("Distance: %5.0f cm\n", dist);
 											}else{
 												send[2] = ANCHOR_ID;
