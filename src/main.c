@@ -453,7 +453,7 @@ int main(void)
 												dis = dist2*100;//dis 为单位为cm的距离
 												dist = LP(dis,TAG_ID);//LP 为低通滤波器，让数据更稳定
 												time32_reset = 0;
-												GPIO_Toggle(GPIOA,LED_PIN);
+											//	GPIO_Toggle(GPIOA,LED_PIN);
 											if (GPIO_ReadInputDataBit(GPIOD,SW2) != RESET)  //通过拨码开关判断数据输出格式
 											{
 												dID=TAG_ID;
