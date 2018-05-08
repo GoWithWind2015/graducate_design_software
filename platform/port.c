@@ -266,6 +266,7 @@ int RCC_Configuration(void)
 
 void usartinit(void)
 {
+	//此处串口初始化函数，不做任何改动 便可使用
 	USART_InitTypeDef USART_InitStructure;
 	GPIO_InitTypeDef GPIO_InitStructure;
 
