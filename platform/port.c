@@ -558,7 +558,7 @@ GPIO_PinRemapConfig(GPIO_Remap_SWJ_JTAGDisable, ENABLE);
 	//在此处修改相应的按键引脚
 	GPIO_InitStructure.GPIO_Pin = SW1|SW2;
 	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IPU;
-	GPIO_Init(GPIOA, &GPIO_InitStructure);
+	GPIO_Init(GPIOD, &GPIO_InitStructure);
 	
 		GPIO_InitStructure.GPIO_Pin = SW3 | SW4 | SW5 | SW6 | SW7 | SW8;
 	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IPU;
@@ -568,9 +568,9 @@ GPIO_PinRemapConfig(GPIO_Remap_SWJ_JTAGDisable, ENABLE);
 //	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;
 //	GPIO_Init(GPIOA, &GPIO_InitStructure);
 //下面的程序根据SW3-5 6-8的值设置 TAG_ID和ANCHOR_ID ，通过SW1的值设置是基站还是标签
-if (GPIO_ReadInputDataBit(GPIOD,SW1) == RESET)
+if (GPIO_ReadInputDataBit(GPIOD,SW1) == RESET)  //选择发送模式（TAG标签）还是接收模式(ANCHOR基站)
 {
-	Work_Mode = 0;//TX
+	Work_Mode = 0;//TX   //标签模式
 	//没有使用LED 故此处注释掉
 //	GPIO_Toggle(GPIOA,LED_PIN);
 }else{

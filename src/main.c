@@ -192,7 +192,8 @@ void LED_blink(void)
 	uint8_t ii;
 	for (ii=0;ii<10;ii++)
 {
-	GPIO_Toggle(GPIOA,LED_PIN);
+		//此处没有用到，进行注释，板子没有LED灯
+//	GPIO_Toggle(GPIOA,LED_PIN);
 	deca_sleep(100);
 }
 }
